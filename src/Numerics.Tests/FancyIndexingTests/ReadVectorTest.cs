@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using MathNet.Numerics.LinearAlgebra.Single;
+using System;
 
 namespace MathNet.Numerics.Tests.FancyIndexingTests
 {
@@ -22,6 +23,25 @@ namespace MathNet.Numerics.Tests.FancyIndexingTests
             var r = v[new [] { 1, 5, 0 }];
             Assert.That(r, Is.Not.Null);
             Assert.That(r, Is.EqualTo(DenseVector.OfArray(new [] { 2f, 10f, 0f })));
+        }
+
+        [Test]
+        public void TestLogicalIndex()
+        {
+            var v = DenseVector.OfArray(new[] { 0f, 1f, 2f, 3f, 4f, 5f });
+            var r = v[new[] { false, false, true, true, false, true }];
+            Assert.That(r, Is.Not.Null);
+            Assert.That(r, Is.EqualTo(DenseVector.OfArray(new[] { 2f, 3f, 5f })));
+        }
+
+        [Test]
+        public void TestLogicalIndexInvalidLength()
+        {
+            var v = DenseVector.OfArray(new[] { 0f, 1f, 2f, 3f, 4f, 5f });
+            var exception = Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                var r = v[new[] { false, false, true, true, false }];
+            });
         }
     }
 }
