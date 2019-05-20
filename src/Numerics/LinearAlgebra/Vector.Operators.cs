@@ -242,6 +242,24 @@ namespace MathNet.Numerics.LinearAlgebra
             return dividend.PointwiseRemainder(divisor);
         }
 
+        /// <summary>
+        /// Implicit conversion of scalar to a vector of length 1.
+        /// </summary>
+        /// <param name="scalar">Scalar that shall be converted</param>
+        public static implicit operator Vector<T>(T scalar)
+        {
+            return Build.Dense(new T[] { scalar });
+        }
+
+        /// <summary>
+        /// Implicit conversion of native array to a vector
+        /// </summary>
+        /// <param name="array">Array that shall be converted</param>
+        public static implicit operator Vector<T>(T[] array)
+        {
+            return Build.Dense(array);
+        }
+
         [SpecialName]
         public static Vector<T> op_DotMultiply(Vector<T> x, Vector<T> y)
         {

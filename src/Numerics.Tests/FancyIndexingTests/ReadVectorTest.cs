@@ -38,7 +38,7 @@ namespace MathNet.Numerics.Tests.FancyIndexingTests
     {
 
         [Test]
-        public void TestSimpleIntegerIndex()
+        public void GetSimpleIntegerIndex()
         {
             var v = DenseVector.OfArray(new[] { 0f, 1f, 2, 3, 4f, 5f });
             Assert.That(v[3], Is.EqualTo(3f));
@@ -46,7 +46,7 @@ namespace MathNet.Numerics.Tests.FancyIndexingTests
         }
 
         [Test]
-        public void TestIntegerEnumerableIndex()
+        public void GetIntegerEnumerableIndex()
         {
             var v = DenseVector.OfArray(new[] { 0f, 2f, 4f, 6f, 8f, 10f });
             var r = v[new [] { 1, 5, 0 }];
@@ -55,7 +55,7 @@ namespace MathNet.Numerics.Tests.FancyIndexingTests
         }
 
         [Test]
-        public void TestIntegerEnumerableIndexOutOfRange()
+        public void GetIntegerEnumerableIndexOutOfRange()
         {
             var v = DenseVector.OfArray(new[] { 0f, 2f, 4f, 6f, 8f, 10f });
             Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -65,7 +65,7 @@ namespace MathNet.Numerics.Tests.FancyIndexingTests
         }
 
         [Test]
-        public void TestIntegerEnumerableIndexEmpty()
+        public void GetIntegerEnumerableIndexEmpty()
         {
             var v = DenseVector.OfArray(new[] { 0f, 2f, 4f, 6f, 8f, 10f });
             Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -75,7 +75,7 @@ namespace MathNet.Numerics.Tests.FancyIndexingTests
         }
 
         [Test]
-        public void TestLogicalIndex()
+        public void GetLogicalIndex()
         {
             var v = DenseVector.OfArray(new[] { 0f, 1f, 2f, 3f, 4f, 5f });
             var r = v[new[] { false, false, true, true, false, true }];
@@ -84,7 +84,7 @@ namespace MathNet.Numerics.Tests.FancyIndexingTests
         }
 
         [Test]
-        public void TestLogicalIndexInvalidLength()
+        public void GetLogicalIndexInvalidLength()
         {
             var v = DenseVector.OfArray(new[] { 0f, 1f, 2f, 3f, 4f, 5f });
             Assert.Throws<ArgumentOutOfRangeException>(() =>

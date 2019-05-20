@@ -37,7 +37,7 @@ namespace MathNet.Numerics.LinearAlgebra
     {
 
         /// <summary>
-        /// Gets a subvector of this vector that contains the elements of this vector in the same order
+        /// Gets/sets a subvector of this vector that contains the elements of this vector in the same order
         /// as given in the provided indices.
         /// </summary>
         /// <param name="indices">
@@ -59,10 +59,33 @@ namespace MathNet.Numerics.LinearAlgebra
                 }
                 return target;
             }
+            set {
+                var idxArray = indices as int[] ?? indices.ToArray();
+                if (idxArray.Length < 1)
+                {
+                    throw new ArgumentOutOfRangeException("The number of elements in the subvector must be positive");
+                }
+                if (value.Count != idxArray.Length && value.Count != 1)
+                {
+                    throw new ArgumentOutOfRangeException("The value passed to a subarray must either be scalar or have the same number as elements as the indexed subarray");
+                }
+                if (value.Count == 1)
+                {
+                    var v = value[0];
+                    foreach (int idx in idxArray) this[idx] = v;
+                }
+                else
+                {
+                    for (int i = 0; i < idxArray.Length; i++)
+                    {
+                        this[idxArray[i]] = value[i];
+                    }
+                }
+            }
         }
 
         /// <summary>
-        /// Gets a subvector of this vector containing only the elements where the provided logical
+        /// Gets/sets a subvector of this vector containing only the elements where the provided logical
         /// enumerable is set to true.
         /// </summary>
         /// <param name="indices">
@@ -90,8 +113,35 @@ namespace MathNet.Numerics.LinearAlgebra
                 }
                 return target;
             }
+            set
+            {
+                var idxArray = indices as bool[] ?? indices.ToArray();
+                if (idxArray.Length != this.Count)
+                {
+                    throw new ArgumentOutOfRangeException("Logical indices must have the same length as the target vector");
+                }
+                if (value.Count != idxArray.Count(idx => idx == true) && value.Count != 1)
+                {
+                    throw new ArgumentOutOfRangeException("The value passed to a subarray must either be scalar or have the same number as elements as the indexed subarray");
+                }
+                if (value.Count == 1)
+                {
+                    var v = value[0];
+                    for (int i = 0; i < idxArray.Length; i++)
+                    {
+                        if (idxArray[i]) this[i] = v;
+                    }
+                }
+                else
+                {
+                    var j = 0;
+                    for (int i = 0; i < idxArray.Length; i++)
+                    {
+                        if (idxArray[i]) this[i] = value[j++];
+                    }
+                }
+            }
         }
-
 
     }
 }
