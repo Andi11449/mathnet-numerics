@@ -1,10 +1,11 @@
 ﻿using NUnit.Framework;
 using MathNet.Numerics.LinearAlgebra.Single;
+using MathNet.Numerics.LinearAlgebra;
 using System;
 
-namespace MathNet.Numerics.Tests.FancyIndexingTests
+namespace MathNet.Numerics.Tests.IndexingTests
 {
-    [TestFixture, Category("FancyIndexing")]
+    [TestFixture, Category("Indexing")]
     public class WriteVectorTest
     {
 
@@ -91,5 +92,38 @@ namespace MathNet.Numerics.Tests.FancyIndexingTests
             });
         }
 
+        [Test]
+        public void SetRange()
+        {
+            var v = DenseVector.OfArray(new[] { 0f, 1f, 2f, 3f, 4f, 5f });
+            v[Indexer.FromRange(2, 4)] = DenseVector.OfArray(new[] { -2f, -3f });
+            Assert.That(v, Is.EqualTo(DenseVector.OfArray(new[] { 0f, 1f, -2f, -3f, 4f, 5f })));
+        }
+
+        [Test]
+        public void SetRangeVectorOfLength1()
+        {
+            var v = DenseVector.OfArray(new[] { 0f, 1f, 2f, 3f, 4f, 5f });
+            v[Indexer.FromRange(2, 4)] = DenseVector.OfArray(new[] { 8f });
+            Assert.That(v, Is.EqualTo(DenseVector.OfArray(new[] { 0f, 1f, 8f, 8f, 4f, 5f })));
+        }
+
+        [Test]
+        public void SetRangeScalar()
+        {
+            var v = DenseVector.OfArray(new[] { 0f, 1f, 2f, 3f, 4f, 5f });
+            v[Indexer.FromRange(2, 4)] = 8;
+            Assert.That(v, Is.EqualTo(DenseVector.OfArray(new[] { 0f, 1f, 8f, 8f, 4f, 5f })));
+        }
+
+        [Test]
+        public void SetRangeInvalidLength()
+        {
+            var v = DenseVector.OfArray(new[] { 0f, 1f, 2f, 3f, 4f, 5f });
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                v[Indexer.FromRange(2, 5)] = new[] { -2f, -3f };
+            });
+        }
     }
 }

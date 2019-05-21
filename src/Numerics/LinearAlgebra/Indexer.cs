@@ -34,10 +34,11 @@ using System;
 
 namespace MathNet.Numerics.LinearAlgebra
 {
+
     /// <summary>
-    /// A convenience class that provides access to the available indexers
+    /// Abstract superclass for indexers into <see cref="Vector{T}"/> and columns/rows of <see cref="Matrix{T}"/>.
     /// </summary>
-    public class Indexing
+    public abstract class Indexer : IEnumerable<int>
     {
 
         /// <summary>
@@ -71,14 +72,12 @@ namespace MathNet.Numerics.LinearAlgebra
         /// </summary>
         /// <param name="startIncl">First element/row/column that shall be selected (inclusively)</param>
         /// <param name="endExcl">Last element/row/column that shall be selected (exclusively)</param>
-        /// <param name="step">Stepsize for the selection, defaults to 1</param>
+        /// <param name="step">Stepsize for the selection, defaults to 1 if endExcl &gt; startIncl or -1 if endExcl &lt; startIncl/></param>
         /// <returns></returns>
-        public static Indexer Range(int startIncl, int endExcl, int step = 1) => new RangeIndexer(startIncl, endExcl, step);
+        public static Indexer FromRange(int startIncl, int endExcl, int? step = null) => new RangeIndexer(startIncl, endExcl, step);
 
-    }
 
-    public abstract class Indexer : IEnumerable<int>
-    {
+
 
         private int[] _indices;
 
@@ -108,12 +107,12 @@ namespace MathNet.Numerics.LinearAlgebra
 
         public static implicit operator Indexer(int[] indices)
         {
-            return Indexing.FromIndices(indices);
+            return Indexer.FromIndices(indices);
         }
 
         public static implicit operator Indexer(bool[] indices)
         {
-            return Indexing.FromLogical(indices);
+            return Indexer.FromLogical(indices);
         }
 
     }
@@ -171,13 +170,36 @@ namespace MathNet.Numerics.LinearAlgebra
 
     internal class RangeIndexer : Indexer
     {
-        internal RangeIndexer(int startIncl, int stopExcl, int step = 1)
+        private readonly int _start, _stop, _step;
+
+        internal RangeIndexer(int startIncl, int stopExcl, int? step = null)
         {
+            if (step == 0 || (step > 0 && stopExcl < startIncl) || (step < 0 && stopExcl > startIncl))
+            {
+                throw new ArgumentOutOfRangeException("Selected range does not contain any elements");
+            }
+            _start = startIncl;
+            _stop = stopExcl;
+            _step = step != null ? step.Value : GetDefaultStep(startIncl, stopExcl);
+        }
+
+        private int GetDefaultStep(int startIncl, int stopExcl)
+        {
+            if (stopExcl < startIncl) return -1;
+            return 1;
         }
 
         protected override int[] CreateIndexArray(int vectorLength)
         {
-            throw new System.NotImplementedException();
+            var delta = Math.Abs(_stop - _start);
+            var numSteps = (delta - 1) / Math.Abs(_step) + 1;
+            var indices = new int[numSteps];
+            indices[0] = _start;
+            for (var i = 1; i < numSteps; i++)
+            {
+                indices[i] = indices[i - 1] + _step;
+            }
+            return indices;
         }
     }
 
