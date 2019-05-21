@@ -430,6 +430,13 @@ namespace MathNet.Numerics.Providers.Common.Mkl
 
         #endregion FFT
 
+        #region Convolution
+
+        [DllImport(_DllName, ExactSpelling = true, SetLastError = false, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern MklConvolutionStatus VectorConv1D(float[] kernel, int kernelLength, float[] x, int xLength, int firstX, float[] result, int resultLength);
+
+
+        #endregion Convolution
         // ReSharper restore InconsistentNaming
     }
 }
