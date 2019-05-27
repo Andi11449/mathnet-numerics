@@ -1,15 +1,23 @@
 #include "convolution.h"
 
-int VectorConv1D(const float* kernel, const int kernelLength, const float* x, const int xLength, const int firstX, float* result, const int resultLength)
+template <class T> int conv1d(
+    const T* kernel, const int kernelLength,
+    const T* x, const int xLength, const int firstX,
+    T* result, const int resultLength,
+    int (*convTaskCreation)(VSLConvTaskPtr*, const MKL_INT, const MKL_INT, const MKL_INT, const MKL_INT),
+    int (*convTaskExecution)(VSLConvTaskPtr, const T[], const MKL_INT, const T[], const MKL_INT, T[], const MKL_INT)
+)
 {
     VSLConvTaskPtr task;
-    if (vslsConvNewTask1D(&task, VSL_CONV_MODE_AUTO, kernelLength, xLength, resultLength) != VSL_STATUS_OK)
+    if (convTaskCreation(&task, VSL_CONV_MODE_AUTO, kernelLength, xLength, resultLength) != VSL_STATUS_OK)
     {
         return ConvolutionStatusTaskCreationFailed;
     }
     vslConvSetStart(task, &firstX);
-    auto executionStatus = vslsConvExec1D(task, kernel, 1, x, 1, result, 1);
+    auto executionStatus = convTaskExecution(task, kernel, 1, x, 1, result, 1);
     if (vslConvDeleteTask(&task) != 0) return ConvolutionStatusTaskDestructionFailed;
     if (executionStatus != VSL_STATUS_OK) return ConvolutionStatusTaskExecutionFailed;
     return ConvolutionStatusSuccess;
 }
+
+

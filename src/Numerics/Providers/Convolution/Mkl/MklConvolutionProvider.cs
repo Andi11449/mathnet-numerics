@@ -69,23 +69,25 @@ namespace MathNet.Numerics.Providers.Convolution.Mkl
 
         public void Conv1D(float[] kernel, float[] x, int xOffset, float[] y, int yOffset, int length)
         {
-            SafeNativeMethods.VectorConv1D(kernel, kernel.Length, x, x.Length, xOffset, y, length);
+            SafeNativeMethods.s_conv1d(kernel, kernel.Length, x, x.Length, xOffset, y, length);
         }
 
         public void Conv1D(double[] kernel, double[] x, int xOffset, double[] y, int yOffset, int length)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Conv1D(Complex[] kernel, Complex[] x, int xOffset, Complex[] y, int yOffset, int length)
-        {
-            throw new NotImplementedException();
+            SafeNativeMethods.d_conv1d(kernel, kernel.Length, x, x.Length, xOffset, y, length);
         }
 
         public void Conv1D(Complex32[] kernel, Complex32[] x, int xOffset, Complex32[] y, int yOffset, int length)
         {
-            throw new NotImplementedException();
+            SafeNativeMethods.c_conv1d(kernel, kernel.Length, x, x.Length, xOffset, y, length);
         }
+
+        public void Conv1D(Complex[] kernel, Complex[] x, int xOffset, Complex[] y, int yOffset, int length)
+        {
+            SafeNativeMethods.z_conv1d(kernel, kernel.Length, x, x.Length, xOffset, y, length);
+        }
+
+        
 
         public void Dispose()
         {

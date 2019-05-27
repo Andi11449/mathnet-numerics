@@ -50,6 +50,11 @@ Linear Algebra: optimized range checking in vectors and matrices</PackageRelease
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Convolutions\TypedConvolution.cs">
+      <DependentUpon>TypedConvolution.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Providers\Convolution\ManagedReference\ManagedConvolutionProvider.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -57,6 +62,10 @@ Linear Algebra: optimized range checking in vectors and matrices</PackageRelease
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Convolutions\TypedConvolution.tt">
+      <LastGenOutput>TypedConvolution.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="Providers\Convolution\ManagedReference\ManagedConvolutionProvider.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ManagedConvolutionProvider.cs</LastGenOutput>
