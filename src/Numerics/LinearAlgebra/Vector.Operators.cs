@@ -27,6 +27,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
+using MathNet.Numerics.LinearAlgebra.Logical;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -258,6 +259,32 @@ namespace MathNet.Numerics.LinearAlgebra
         public static implicit operator Vector<T>(T[] array)
         {
             return Build.Dense(array);
+        }
+
+        [SpecialName]
+        public static LogicalVector op_ElementwiseEquals(Vector<T> x, Vector<T> y)
+        {
+            if (x.Count != y.Count && x.Count != 1 && y.Count != 1)
+            {
+                throw new ArgumentException("The length of the arrays must be equal or one of the two arguments must be scalar");
+            }
+            if (x.Count == y.Count)
+            {
+                return Generate.Map2(x.AsArray() ?? x.ToArray(), y.AsArray() ?? y.ToArray(), (v1, v2) => v1.Equals(v2));
+            }
+            T scalar;
+            Vector<T> v;
+            if (x.Count == 1)
+            {
+                scalar = x[0];
+                v = y;
+            }
+            else
+            {
+                scalar = y[0];
+                v = x;
+            }
+            return Generate.Map(v.AsArray() ?? v.ToArray(), vi => vi.Equals(scalar));
         }
 
         [SpecialName]
